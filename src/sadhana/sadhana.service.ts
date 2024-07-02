@@ -25,7 +25,6 @@ export class SadhanaService {
       const sadhanaConfiguration = await this.sadhanaConfiguration.findOne({
         where: { counselor: { id: counselorId } },
       });
-      console.log(sadhanaConfiguration);
       if (!sadhanaConfiguration) {
         throw new HttpException(
           'no sadhana configuration found please contact to your counselor',

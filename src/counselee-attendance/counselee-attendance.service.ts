@@ -97,18 +97,28 @@ export class CounseleeAttendanceService {
     }
   }
 
-  async findAllByCounselor(
-    id: string,
-  ): Promise<{ Success: boolean; content: Attendance[] } | Error> {
+  async findAllByCounselor(id: string, approved: boolean) {
     try {
       const response = await this.attendanceRepository.find({
-        where: { counselor: { id: id } },
+        where: { counselor: { id: id }, approved: approved },
         relations: ['counselor', 'counselee', 'scheduledSession'],
       });
       if (response.length === 0) {
         throw new HttpException('no counselor to show', 404);
       }
-      return { Success: true, content: response };
+      // Count approved true and false
+      const approvedTrueCount = response.filter(
+        (record) => record.approved === true,
+      ).length;
+      const approvedFalseCount = response.filter(
+        (record) => record.approved === false,
+      ).length;
+      return {
+        Success: true,
+        content: response,
+        approvedRecordsCount: approvedTrueCount,
+        pendingRecordsCount: approvedFalseCount,
+      };
     } catch (error) {
       throw error;
     }

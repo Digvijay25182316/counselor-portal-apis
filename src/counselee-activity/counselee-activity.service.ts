@@ -72,6 +72,24 @@ export class CounseleeActivityService {
     }
   }
 
+  async getByCounselorId(id: string) {
+    try {
+      const response = await this.counselorRepository.findOne({
+        where: { id },
+      });
+      if (!response) {
+        throw new HttpException('Counselor not found', 404);
+      }
+      const counseleeActivity = await this.counseleeActivityRepository.find({
+        where: { counselor: { id } },
+        relations: ['counselee', 'counselor', 'activity'],
+      });
+      return { Success: true, content: counseleeActivity };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async remove(
     id: string,
   ): Promise<{ Success: boolean; message: string } | Error> {

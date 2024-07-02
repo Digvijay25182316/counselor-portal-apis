@@ -37,6 +37,18 @@ export class CounseleeActivityController {
     return this.counseleeActivityService.findAll();
   }
 
+  @Get('/counselor/:counselorid')
+  @ApiOperation({
+    summary: 'Get all counselee activities based on counselor id',
+  })
+  @ApiResponse({
+    status: 200,
+    type: [CreateCounseleeActivityDto],
+  })
+  async getByCounselorId(@Param('counselorid') counselorid: string) {
+    return this.counseleeActivityService.getByCounselorId(counselorid);
+  }
+
   @Post('/create')
   @ApiOperation({ summary: 'Create counselee activity' })
   @ApiResponseMessage('successfully submitted activity')

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -56,15 +57,17 @@ export class CounseleeAttendanceController {
     type: [Attendance],
   })
   async findAllByCounselor(
+    @Query('approved') approved: boolean,
     @Param('id') id: string,
   ): Promise<{ Success: boolean; content: Attendance[] } | Error> {
-    return await this.attendanceService.findAllByCounselor(id);
+    return await this.attendanceService.findAllByCounselor(id, approved);
   }
 
   @Roles(Role.Counselor, Role.CCT)
   @UseGuards(RolesGuard)
   @ApiSecurity('JWT-auth')
   @Get('/auto-approve/:counselorid')
+  @ApiResponseMessage('Approved all attendance')
   @ApiOperation({ summary: 'Approve all attendance' })
   async autoApproveByCounselorId(@Param('counselorid') counselorid: string) {
     return await this.attendanceService.autoApproveByCounselorId(counselorid);
@@ -96,7 +99,7 @@ export class CounseleeAttendanceController {
   @ApiSecurity('JWT-auth')
   @ApiOperation({ summary: 'auto approve turn on / off' })
   @ApiResponseMessage('Auto Approve turned on / off')
-  @Get('/autoapprove/toggle/:counselorid')
+  @Post('/autoapprove/toggle/:counselorid')
   async autoApproveOnOff(@Param('counselorid') counselorid: string) {
     return await this.attendanceService.AutoApproveOnOFF(counselorid);
   }
