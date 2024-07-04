@@ -53,7 +53,7 @@ export class CounseleeSadhanaController {
     return this.SadhanaFormService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Create a new sadhana form' })
+  @ApiOperation({ summary: 'Create Sadhana Entry' })
   @ApiBody({ type: CreateSadhanaFormDto })
   @Post('/register')
   @ApiResponseMessage('successfully registered sadhana')
@@ -61,6 +61,14 @@ export class CounseleeSadhanaController {
     @Body() createSadhanaFormDto: CreateSadhanaFormDto,
   ): Promise<{ Success: boolean; message: string } | Error> {
     return this.SadhanaFormService.create(createSadhanaFormDto);
+  }
+
+  @ApiOperation({ summary: 'Get All Sadhana Entries Based on counselor id' })
+  @ApiBody({ type: CreateSadhanaFormDto })
+  @Get('/counselor/:counselorid')
+  @ApiResponseMessage('successfully registered sadhana')
+  async findByCounselor(@Param('id') id: string) {
+    return this.SadhanaFormService.findByCounselor(id);
   }
 
   @Roles(Role.Counselor, Role.CCT)

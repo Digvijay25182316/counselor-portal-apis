@@ -103,9 +103,6 @@ export class CounseleeAttendanceService {
         where: { counselor: { id: id }, approved: approved },
         relations: ['counselor', 'counselee', 'scheduledSession'],
       });
-      if (response.length === 0) {
-        throw new HttpException('no counselor to show', 404);
-      }
       // Count approved true and false
       const approvedTrueCount = response.filter(
         (record) => record.approved === true,

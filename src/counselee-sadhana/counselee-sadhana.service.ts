@@ -52,19 +52,19 @@ export class CounseleeSadhanaService {
         where: { counselee: { id: createSadhanaFormDto.counseleeId } },
       });
       if (sadhanaEntryExist) {
-        throw new HttpException('sadhana form already exists', 409);
+        throw new HttpException('sadhana already given', 409);
       }
       const counselee = await this.Counselee.findOne({
         where: { id: createSadhanaFormDto.counseleeId },
       });
       if (!counselee) {
-        throw new HttpException('counselee does not exist', 404);
+        throw new HttpException('Counselee Not Found', 404);
       }
       const counselor = await this.Counselor.findOne({
         where: { id: createSadhanaFormDto.counselorId },
       });
       if (!counselor) {
-        throw new HttpException('counselor does not exist', 404);
+        throw new HttpException('Counselor Not Found', 404);
       }
       const sadhanaForm = this.SadhanaForm.create({
         ...createSadhanaFormDto,
@@ -73,6 +73,24 @@ export class CounseleeSadhanaService {
       });
       await this.SadhanaForm.save(sadhanaForm);
       return { Success: true, message: 'successfully submitted form ' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findByCounselor(id: string) {
+    try {
+      const Counselor = await this.Counselor.findOne({
+        where: { id: id },
+      });
+      if (!Counselor) {
+        throw new HttpException('Counselor Not Found', 409);
+      }
+      const SadhanaEntries = await this.SadhanaForm.find({
+        where: { counselor: { id } },
+      });
+
+      return { Success: true, content: SadhanaEntries };
     } catch (error) {
       throw error;
     }
